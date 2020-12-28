@@ -8,15 +8,21 @@ return class extends Component{
             error:null
         }
 
-        ComponentWithMount () {
-            axios.interceptots.request.use(req => {
+        componentWillMount () {
+            this.reqInterceptor = axios.interceptors.request.use(req => {
                 this.setState({error: null});
                 return req;
             });
-            axios.interceptots.response.use(res => res, error => {
-                this.state.setState({error: error});
+            this.resInterceptor = axios.interceptors.response.use(res => res, error => {
+                this.setState({error: error});
             });
         }
+
+        componentWillUnmount() {
+            axios.interceptors.request.eject(this.reqInterceptor);
+            axios.interceptors.response.eject(this.resInterceptor);
+        }
+
         errorConfirmedHandler = () => {
             this.setState({error: null});
         }
@@ -24,10 +30,11 @@ return class extends Component{
         render(){
             return(
                 <Aux>
-                    <Modal 
+                    <Modal
                         show={this.state.error}
                         modalClosed={this.errorConfirmedHandler}>
                         {this.state.error ? this.state.error.message : null}
+
                     </Modal>
                     <WrappedComponent {...this.props} />
                 </Aux>
