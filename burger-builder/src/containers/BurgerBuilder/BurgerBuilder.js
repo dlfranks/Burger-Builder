@@ -28,7 +28,7 @@ class BurgerBuilder extends Component {
         
     }
     componentDidMount (){
-        axios.get('https://react-my-burger-edff0-default-rtdb.firebaseio.com/ingredients')
+        axios.get('https://react-my-burger-edff0-default-rtdb.firebaseio.com/ingredients.json')
         .then(response => {
             this.setState({ingredients:response.data});
         })
@@ -87,30 +87,40 @@ class BurgerBuilder extends Component {
     }
     purchaseContinueHandler = () => {
         //alert('You continue!');
-        this.setState({loading:true});
+        //this.setState({loading:true});
 
-        const order = {
-            ingredients: this.state.ingredients,
-            price : this.state.price,
-            customer:{
-                name: 'Max Schwarzmüller',
-                address: {
-                    street: 'Teststreet 1',
-                    zipCode: '41351',
-                    country: 'Germany'
-                },
-                email: 'test@test.com'
-            },
-            deliveryMethod: 'fastest'
+        const queryParams = [];
+        for (let i in this.state.ingredients) {
+            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]));
         }
-        axios.post('/orders.json', order).then(response => {
-            
-            this.setState({loading:false, purchasing:false});
-        })
-        .catch(error => {
-            this.setState({loading:false, purchasing:false});
-            
+        queryParams.push('price=' + this.state.totalPrice);
+        const queryString = queryParams.join('&');
+        this.props.history.push({
+            pathname: '/checkout',
+            search: '?' + queryString
         });
+        // const order = {
+        //     ingredients: this.state.ingredients,
+        //     price : this.state.price,
+        //     customer:{
+        //         name: 'Max Schwarzmüller',
+        //         address: {
+        //             street: 'Teststreet 1',
+        //             zipCode: '41351',
+        //             country: 'Germany'
+        //         },
+        //         email: 'test@test.com'
+        //     },
+        //     deliveryMethod: 'fastest'
+        // }
+        // axios.post('/orders.json', order).then(response => {
+            
+        //     this.setState({loading:false, purchasing:false});
+        // })
+        // .catch(error => {
+        //     this.setState({loading:false, purchasing:false});
+            
+        // });
     }
 
     render () {
