@@ -7,7 +7,7 @@ import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
 
 
-import burgerBuilderReducer from './containers/store/reducers/burgerBuilder';
+import burgerBuilderReducer from './store/reducers/burgerBuilder';
 import './index.css';
 import App from './App';
 
