@@ -2,17 +2,22 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter} from 'react-router-dom';
 import reportWebVitals from './reportWebVitals';
-import {createStore, applyMiddleware, compose} from 'redux';
+import {createStore, applyMiddleware, compose, combineReducers} from 'redux';
 import {Provider} from 'react-redux';
 import thunk from 'redux-thunk';
 
 
 import burgerBuilderReducer from './store/reducers/burgerBuilder';
+import orderReducer from './store/reducers/order';
 import './index.css';
 import App from './App';
 
-const composerEnhancers = window.__REDUX_DEVTOOLS_EXTENSION__COMPOSE || compose;
-const store = createStore(burgerBuilderReducer, composerEnhancers(applyMiddleware(thunk)));
+const composerEnhancers = window.__REDUX_DEVTOOLS_EXTENSION__COMPOSE__ || compose;
+const rootReducer = combineReducers({
+  burgerBuilder : burgerBuilderReducer,
+  order: orderReducer
+})
+const store = createStore(rootReducer, composerEnhancers(applyMiddleware(thunk)));
 
 const app = (
   <Provider store={store}>
@@ -23,8 +28,7 @@ const app = (
   
 );
 
-ReactDOM.render(app, document.getElementById('root')
-);
+ReactDOM.render(app, document.getElementById('root'));
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

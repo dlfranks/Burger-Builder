@@ -3,7 +3,7 @@ import axios from '../../axios-order';
 
 export const purchaseBurgerStart = () => {
     return {
-        type:actionTypes.purchaseBurgerStart
+        type:actionTypes.PURCHASE_BURGER_START
     }
 };
 export const purchaseBurgerSuccess = (id, orderData) => {
@@ -19,14 +19,14 @@ export const purchaseBurgerFail = (error) => {
         error: error
     }
 };
-export const purchcaseBurger = (orderData) => {
+export const purchaseBurger = (orderData) => {
     return dispatch => {
         dispatch(purchaseBurgerStart());
         axios.post('/orders.json', orderData)
             .then(response => {
                 console.log(response.data);
                 dispatch(purchaseBurgerSuccess(response.data.name, orderData));
-                this.props.history.push('/');
+                
             })
             .catch(error => {
                 dispatch(purchaseBurgerFail(error));
@@ -58,7 +58,7 @@ export const fetchOrdersFail = ( error ) => {
 
 export const fetchOrdersStart = () => {
     return {
-        type: actionTypes.FETCH_ORDERS_SRART
+        type: actionTypes.FETCH_ORDERS_START
     };
 };
 
