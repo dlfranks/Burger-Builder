@@ -9,17 +9,14 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import axios from '../../axios-order';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import withErrorHandler from '../../hoc/WithErrorHandler/withErrorhandler';
-import * as burgerBuilderActions from '../../store/actions/index';
+import * as actions from '../../store/actions/index';
 
 
 
 class BurgerBuilder extends Component {
 
     state = {
-    
-        purchasable:false,
-        
-        
+        purchasing:false,
     }
     componentDidMount (){
         console.log(this.props);
@@ -37,7 +34,12 @@ class BurgerBuilder extends Component {
 
     
     purchaseHandler = () => {
-        this.setState({purchasing:true});
+        if (this.props.isAuthenticated) {
+            this.setState( { purchasing: true } );
+        } else {
+            this.props.onSetAuthRedirectPath('/checkout');
+            this.props.history.push('/auth');
+        }
     }
     purchaseCancelHandler = () => {
         this.setState({purchasing:false});
@@ -56,7 +58,7 @@ class BurgerBuilder extends Component {
             disabledInfo[key] = disabledInfo[key] <= 0
         }
         let orderSummary = null;
-        let burger = this.state.error ? <p>Ingredients can't be loaded!</p> : <Spinner/>;
+        let burger = this.props.error ? <p>Ingredients can't be loaded!</p> : <Spinner/>;
 
         if(this.props.ings){
             burger = (
@@ -69,6 +71,7 @@ class BurgerBuilder extends Component {
                     disabled = {disabledInfo}
                     ordered = {this.purchaseHandler}
                     purchasable={this.updatedPurchaseState(this.props.ings)}
+                    isAuth={this.props.isAuthenticated}
                     />
                 </Aux>
             );
@@ -95,15 +98,18 @@ const mapStateToProps = state => {
     return {
         ings: state.burgerBuilder.ingredients,
         price: state.burgerBuilder.totalPrice,
-        error: state.burgerBuilder.error
+        error: state.burgerBuilder.error,
+        isAuthenticated: state.auth.token !== null
+
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        onIngredientAdded: (ingName) => dispatch(burgerBuilderActions.addIngredient(ingName)),
-        onIngredientRemoved: (ingName) => dispatch(burgerBuilderActions.removeIngredient(ingName)),
-        onInitIngredients: () => dispatch(burgerBuilderActions.initIngredients()),
+        onIngredientAdded: (ingName) => dispatch(actions.addIngredient(ingName)),
+        onIngredientRemoved: (ingName) => dispatch(actions.removeIngredient(ingName)),
+        onInitIngredients: () => dispatch(actions.initIngredients()),
+        onSetAuthRedirectPath: (path) => dispatch(actions.setAuthRedirectPath(path))
         
 
     }

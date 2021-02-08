@@ -107,10 +107,11 @@ class ContactData extends Component {
         const order = {
             ingredients:this.props.ings,
             price: this.props.price,
-            orderData: formData
+            orderData: formData,
+            userId: this.props.userId
         }
         
-        this.props.onOrderBurger(order);
+        this.props.onOrderBurger(order, this.props.token);
     };
     inputChangedHandler(event, inputIdentifier){
         const updatedOrderForm = {
@@ -120,7 +121,7 @@ class ContactData extends Component {
             ...updatedOrderForm[inputIdentifier]
         }
         updatedFormElement.value = event.target.value;
-        updatedFormElement.valid = this.CheckValidity(updatedFormElement.value, updatedFormElement.shouldValidate);
+        updatedFormElement.valid = this.CheckValidity(updatedFormElement.value, updatedFormElement.validation);
         updatedFormElement.touched = true;
         updatedOrderForm[inputIdentifier] = updatedFormElement;
 
@@ -181,7 +182,7 @@ class ContactData extends Component {
                         elementType={formElement.config.elementType}
                         elementConfig={formElement.config.elementConfig}
                         value={formElement.config.value}
-                        invalid={!formElement.config.validation}
+                        invalid={!formElement.config.valid}
                         shouldValidate={formElement.config.validation}
                         touched={formElement.config.touched}
                         changed={(event) => this.inputChangedHandler(event, formElement.id)}
@@ -206,13 +207,14 @@ const mapStateToProps = state => {
     return {
         ings: state.burgerBuilder.ingredients,
         price: state.burgerBuilder.totalPrice,
-        loading: state.order.loading
-
+        loading: state.order.loading,
+        token: state.auth.token,
+        userId: state.auth.userId
     }
 };
 const mapDispatchToProps = dispatch => {
     return {
-        onOrderBurger: (orderData) => dispatch(actions.purchaseBurger(orderData))
+        onOrderBurger: (orderData, token) => dispatch(actions.purchaseBurger(orderData, token))
     }
 }
 

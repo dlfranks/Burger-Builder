@@ -40,8 +40,8 @@ const setIngredients = (state, action) => {
     return updateObject(state, {
         ingredients:{
             salad: action.ingredients.salad,
-            bacon: action.ingredietns.bacon,
-            cheese: action.ingredinets.cheese,
+            bacon: action.ingredients.bacon,
+            cheese: action.ingredients.cheese,
             meat: action.ingredients.meat
         },
         totalPrice: 4,
