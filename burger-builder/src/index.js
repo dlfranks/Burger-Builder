@@ -13,12 +13,15 @@ import './index.css';
 import App from './App';
 
 //const composerEnhancers = window.__REDUX_DEVTOOLS_EXTENSION__COMPOSE__ || compose;
-const composerEnhancers =
-  typeof window === 'object' &&
+let composerEnhancers = compose;
+if(process.env.NODE_ENV === 'development'){
+  composerEnhancers = typeof window === 'object' &&
   window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?   
     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
       // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
     }) : compose;
+}
+  
     
 const rootReducer = combineReducers({
   burgerBuilder : burgerBuilderReducer,
